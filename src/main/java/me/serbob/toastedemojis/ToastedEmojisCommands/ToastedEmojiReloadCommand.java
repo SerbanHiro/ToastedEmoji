@@ -72,7 +72,7 @@ public class ToastedEmojiReloadCommand implements CommandExecutor {
                     sender.sendMessage(ChatColor.RED + "You do not have permission to use this command.");
                 }
                 return true;
-            } if(args.length > 0 && args[0].equalsIgnoreCase("list")) {
+            } else if(args.length > 0 && args[0].equalsIgnoreCase("list")) {
                 sender.sendMessage(ChatColor.GOLD + "Current Emojis:");
                 try {
                     for (Map.Entry<String, String> entry : plugin.getNormalEmojis().entrySet()) {

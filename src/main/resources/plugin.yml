@@ -7,4 +7,5 @@ description: A emoji system made for toasted.gg.
 commands:
   toastedemojis:
     description: Reload the ToastedEmojis config.
-    permission: toastedemojis.emoji
+  toastedemojis.reload:
+    permission: toastedemojis.reload

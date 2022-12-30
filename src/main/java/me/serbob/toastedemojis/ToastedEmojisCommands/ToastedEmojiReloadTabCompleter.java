@@ -13,7 +13,9 @@ public class ToastedEmojiReloadTabCompleter implements TabCompleter {
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
         if (command.getName().equalsIgnoreCase("toastedemojis")) {
             List<String> options = new ArrayList<>();
-            options.add("reload");
+            if(sender.hasPermission("toastedemojis.reload")) {
+                options.add("reload");
+            }
             options.add("list");
             return options;
         }
