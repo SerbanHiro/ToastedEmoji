@@ -70,8 +70,7 @@ public final class ToastedEmojis extends JavaPlugin implements Listener {
 
         // Replace the unnormal emojis in the message
         for (Map.Entry<String, String> entry : unnormalEmojis.entrySet()) {
-            String pattern = ":" + entry.getKey() + ":";
-            replacedMessage = replacedMessage.replace(pattern, entry.getValue());
+            replacedMessage = replacedMessage.replace(":" + entry.getKey() + ":", entry.getValue());
         }
 
         // Set the modified message

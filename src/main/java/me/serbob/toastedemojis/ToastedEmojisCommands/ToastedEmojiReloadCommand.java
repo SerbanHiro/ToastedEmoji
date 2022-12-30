@@ -30,9 +30,7 @@ public class ToastedEmojiReloadCommand implements CommandExecutor {
                     plugin.reloadConfig();
                     try {
                         plugin.getConfig().load(plugin.getConfigFile());
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    } catch (InvalidConfigurationException e) {
+                    } catch (IOException | InvalidConfigurationException e) {
                         throw new RuntimeException(e);
                     }
 
@@ -45,45 +43,44 @@ public class ToastedEmojiReloadCommand implements CommandExecutor {
                     plugin.setNormalEmojisSection(normalEmojisSection);
                     plugin.setUnnormalEmojisSection(unnormalEmojisSection);
 
+                    Map<String, String> normalEmojis = new HashMap<>();
                     if(normalEmojisSection!=null) {
-                        Map<String, String> normalEmojis = new HashMap<>();
-                        for (Map.Entry<String, Object> entry : normalEmojisSection.getValues(false).entrySet()) {
-                            normalEmojis.put(entry.getKey(), entry.getValue().toString());
-                        }
-                        plugin.setNormalEmojis(normalEmojis);
-                    } else {
-                        Map<String, String> normalEmojis = new HashMap<>();
-                        plugin.setNormalEmojis(normalEmojis);
+                        plugin.setNormalEmojis(normalEmojisSection.getValues(false).entrySet().stream()
+                                .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().toString())));
                     }
+                    plugin.setNormalEmojis(normalEmojis);
 
+                    Map<String, String> unnormalEmojis = new HashMap<>();
                     if(unnormalEmojisSection!=null) {
-                        Map<String, String> unnormalEmojis = new HashMap<>();
-                        for (Map.Entry<String, Object> entry : unnormalEmojisSection.getValues(false).entrySet()) {
-                            unnormalEmojis.put(entry.getKey(), entry.getValue().toString());
-                        }
-                        plugin.setUnnormalEmojis(unnormalEmojis);
-                    } else {
-                        Map<String, String> unnormalEmojis = new HashMap<>();
-                        plugin.setUnnormalEmojis(unnormalEmojis);
+                        plugin.setUnnormalEmojis(unnormalEmojisSection.getValues(false).entrySet().stream()
+                                .collect(Collectors.toMap(e -> ":" + e.getKey() + ":", e -> e.getValue().toString())));
                     }
+                    plugin.setUnnormalEmojis(unnormalEmojis);
 
                     sender.sendMessage(ChatColor.GREEN + "ToastedEmojis config reloaded!");
                 } else {
                     sender.sendMessage(ChatColor.RED + "You do not have permission to use this command.");
                 }
                 return true;
-            } else if(args.length > 0 && args[0].equalsIgnoreCase("list")) {
+            } else if (args.length > 0 && args[0].equalsIgnoreCase("list")) {
                 sender.sendMessage(ChatColor.GOLD + "Current Emojis:");
-                try {
-                    for (Map.Entry<String, String> entry : plugin.getNormalEmojis().entrySet()) {
-                        sender.sendMessage(ChatColor.GOLD + " - " + ChatColor.WHITE + entry.getKey() + ChatColor.GOLD + " -> " + ChatColor.WHITE + entry.getValue());
-                    }
-                } catch (Exception e) {}
-                try {
-                    for (Map.Entry<String, String> entry : plugin.getUnnormalEmojis().entrySet()) {
-                        sender.sendMessage(ChatColor.GOLD + " - " + ChatColor.WHITE + ":" + entry.getKey() + ":" + ChatColor.GOLD + " -> " + ChatColor.WHITE + entry.getValue());
-                    }
-                } catch (Exception e) {}
+
+                Map<String, String> normalEmojis = plugin.getNormalEmojis();
+                Map<String, String> unnormalEmojis = plugin.getUnnormalEmojis();
+
+                // Iterate over the normal emojis map and send the messages to the sender
+                for (Map.Entry<String, String> entry : normalEmojis.entrySet()) {
+                    String key = entry.getKey();
+                    String value = entry.getValue();
+                    sender.sendMessage(ChatColor.GOLD + " - " + ChatColor.WHITE + key + ChatColor.GOLD + " -> " + ChatColor.WHITE + value);
+                }
+
+                // Iterate over the unnormal emojis map and send the messages to the sender
+                for (Map.Entry<String, String> entry : unnormalEmojis.entrySet()) {
+                    String key = entry.getKey();
+                    String value = entry.getValue();
+                    sender.sendMessage(ChatColor.GOLD + " - " + ChatColor.WHITE + ":" + key + ":" + ChatColor.GOLD + " -> " + ChatColor.WHITE + value);
+                }
             }
         }
         return false;
