@@ -61,19 +61,25 @@ public class ToastedEmojiReloadCommand implements CommandExecutor {
                 }
                 return true;
             } else if (args.length > 0 && args[0].equalsIgnoreCase("list")) {
-                sender.sendMessage(ChatColor.GOLD + "Current Emojis:");
-                Map<String, String> normalEmojis = this.plugin.getNormalEmojis();
-                Map<String, String> unnormalEmojis = this.plugin.getUnnormalEmojis();
+                if (sender.hasPermission("toastedemojis.list")) {
+                    sender.sendMessage(ChatColor.GOLD + "Current Emojis:");
+                    Map<String, String> normalEmojis = this.plugin.getNormalEmojis();
+                    Map<String, String> unnormalEmojis = this.plugin.getUnnormalEmojis();
 
-                if (!normalEmojis.isEmpty()) {
-                    for (Map.Entry<String, String> entry : normalEmojis.entrySet()) {
-                        sender.sendMessage(ChatColor.GOLD + " - " + ChatColor.WHITE + entry.getKey() + ChatColor.GOLD + " -> " + ChatColor.WHITE + entry.getValue());
+                    if (!normalEmojis.isEmpty()) {
+                        for (Map.Entry<String, String> entry : normalEmojis.entrySet()) {
+                            String symbol = ChatColor.translateAlternateColorCodes('&', entry.getValue());
+                            sender.sendMessage(ChatColor.GOLD + " - " + ChatColor.WHITE + entry.getKey() + ChatColor.GOLD + " -> " + ChatColor.WHITE + symbol);
+                        }
                     }
-                }
-                if (!unnormalEmojis.isEmpty()) {
-                    for (Map.Entry<String, String> entry : unnormalEmojis.entrySet()) {
-                        sender.sendMessage(ChatColor.GOLD + " - " + ChatColor.WHITE + ":" + entry.getKey() + ":" + ChatColor.GOLD + " -> " + ChatColor.WHITE + entry.getValue());
+                    if (!unnormalEmojis.isEmpty()) {
+                        for (Map.Entry<String, String> entry : unnormalEmojis.entrySet()) {
+                            String symbol = ChatColor.translateAlternateColorCodes('&', entry.getValue());
+                            sender.sendMessage(ChatColor.GOLD + " - " + ChatColor.WHITE + ":" + entry.getKey() + ":" + ChatColor.GOLD + " -> " + ChatColor.WHITE + symbol);
+                        }
                     }
+                } else {
+                    sender.sendMessage(ChatColor.RED + "You do not have permission to use this command.");
                 }
             }
         }

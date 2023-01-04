@@ -2,6 +2,8 @@ package me.serbob.toastedemojis;
 
 import me.serbob.toastedemojis.ToastedEmojisCommands.ToastedEmojiReloadCommand;
 import me.serbob.toastedemojis.ToastedEmojisCommands.ToastedEmojiReloadTabCompleter;
+import me.serbob.toastedemojis.Utils.ToastedUtil;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.EventHandler;
@@ -62,12 +64,14 @@ public final class ToastedEmojis extends JavaPlugin implements Listener {
         String originalMessage = event.getMessage();
         String replacedMessage = originalMessage;
 
-        for (Map.Entry<String, String> entry : this.normalEmojis.entrySet())
-            replacedMessage = replacedMessage.replace(entry.getKey(), entry.getValue());
-
+        for (Map.Entry<String, String> entry : this.normalEmojis.entrySet()) {
+            String symbol = ChatColor.translateAlternateColorCodes('&', entry.getValue());
+            replacedMessage = replacedMessage.replace(entry.getKey(), symbol);
+        }
         for (Map.Entry<String, String> entry : this.unnormalEmojis.entrySet()) {
+            String symbol = ChatColor.translateAlternateColorCodes('&', entry.getValue());
             String pattern = ":" + entry.getKey() + ":";
-            replacedMessage = replacedMessage.replace(pattern, entry.getValue());
+            replacedMessage = replacedMessage.replace(pattern, symbol);
         }
         event.setMessage(replacedMessage);
     }

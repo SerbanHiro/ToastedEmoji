@@ -9,3 +9,5 @@ commands:
     description: Reload the ToastedEmojis config.
   toastedemojis.reload:
     permission: toastedemojis.reload
+  toastedemojis.list:
+    permission: toastedemojis.list

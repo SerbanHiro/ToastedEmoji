@@ -1,9 +1,9 @@
 normal-emojis:
   # Emojis without colons
-  o/: hi
+  o/: "&dhi"
 
 unnormal-emojis:
   # Emojis with colons
-  lenny: ( ͡° ͜ʖ ͡°)
-  shrug: ¯\_(ツ)_/¯
-  tableflip: (╯°□°）╯︵ ┻━┻
+  lenny: "&3( ͡° ͜ʖ&5 ͡°)"
+  shrug: "¯\\_(ツ)_/¯"
+  tableflip: "(╯°□°）╯︵ ┻━┻"
