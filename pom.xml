@@ -6,16 +6,17 @@
 
     <groupId>me.serbob</groupId>
     <artifactId>ToastedEmojis</artifactId>
-    <version>1.3.0</version>
+    <version>1.3.1</version>
     <packaging>jar</packaging>
 
     <name>ToastedEmojis</name>
 
-    <description>A emoji system made for toasted.gg.</description>
+    <description>A simple, customizable emoji/anti-swearing system.</description>
     <properties>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+    <url>https://www.spigotmc.org/resources/toastedemoji-swearing-filter-emojis.107047/</url>
 
     <build>
         <plugins>
