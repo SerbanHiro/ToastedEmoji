@@ -67,16 +67,16 @@ public final class ToastedEmojis extends JavaPlugin implements Listener {
 
         for (Map.Entry<String, String> entry : this.normalEmojis.entrySet()) {
             String symbol = ChatColor.translateAlternateColorCodes('&', entry.getValue());
-            replacedMessage = replacedMessage.replace(entry.getKey(), entry.getValue());
             if(getConfig().getBoolean("replace_color"))
                 replacedMessage = replacedMessage.replace(entry.getKey(), symbol);
+            else replacedMessage = replacedMessage.replace(entry.getKey(), entry.getValue());
         }
         for (Map.Entry<String, String> entry : this.unnormalEmojis.entrySet()) {
             String symbol = ChatColor.translateAlternateColorCodes('&', entry.getValue());
             String pattern = ":" + entry.getKey() + ":";
-            replacedMessage = replacedMessage.replace(pattern, entry.getValue());
             if(getConfig().getBoolean("replace_color"))
-                replacedMessage = replacedMessage.replace(entry.getKey(), symbol);
+                replacedMessage = replacedMessage.replace(pattern, symbol);
+            else replacedMessage = replacedMessage.replace(pattern, entry.getValue());
         }
         event.setMessage(replacedMessage);
     }
