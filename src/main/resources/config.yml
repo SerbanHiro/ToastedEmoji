@@ -1,7 +1,7 @@
 replace_color: false
 normal-emojis:
   # Emojis without colons
-  o/: "&dhi"
+  o/: "&dhi&r"
 
 unnormal-emojis:
   # Emojis with colons
