@@ -60,19 +60,23 @@ public final class ToastedEmojis extends JavaPlugin implements Listener {
     }
 
     // Handle the AsyncPlayerChatEvent event
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOW)
     public void onPlayerChat(AsyncPlayerChatEvent event) {
         String originalMessage = event.getMessage();
         String replacedMessage = originalMessage;
 
         for (Map.Entry<String, String> entry : this.normalEmojis.entrySet()) {
             String symbol = ChatColor.translateAlternateColorCodes('&', entry.getValue());
-            replacedMessage = replacedMessage.replace(entry.getKey(), symbol);
+            replacedMessage = replacedMessage.replace(entry.getKey(), entry.getValue());
+            if(getConfig().getBoolean("replace_color"))
+                replacedMessage = replacedMessage.replace(entry.getKey(), symbol);
         }
         for (Map.Entry<String, String> entry : this.unnormalEmojis.entrySet()) {
             String symbol = ChatColor.translateAlternateColorCodes('&', entry.getValue());
             String pattern = ":" + entry.getKey() + ":";
-            replacedMessage = replacedMessage.replace(pattern, symbol);
+            replacedMessage = replacedMessage.replace(pattern, entry.getValue());
+            if(getConfig().getBoolean("replace_color"))
+                replacedMessage = replacedMessage.replace(entry.getKey(), symbol);
         }
         event.setMessage(replacedMessage);
     }
