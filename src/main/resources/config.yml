@@ -1,10 +1,13 @@
 replace_color: false
 normal-emojis:
   # Emojis without colons
-  o/: "&dhi&r"
+  default:
+    o/: "&dhi&r"
 
 unnormal-emojis:
   # Emojis with colons
-  lenny: "&3( ͡° ͜ʖ&5 ͡°)"
-  shrug: "¯\\_(ツ)_/¯"
-  tableflip: "(╯°□°）╯︵ ┻━┻"
+  default:
+    lenny: "&3( ͡° ͜ʖ&5 ͡°)"
+    shrug: "¯\\_(ツ)_/¯"
+  mvp:
+    tableflip: "(╯°□°）╯︵ ┻━┻"

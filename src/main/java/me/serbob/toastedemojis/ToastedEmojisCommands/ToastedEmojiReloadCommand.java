@@ -36,23 +36,42 @@ public class ToastedEmojiReloadCommand implements CommandExecutor {
                     this.plugin.setConfig(this.plugin.getConfig());
                     this.plugin.setNormalEmojisSection(normalEmojisSection);
                     this.plugin.setUnnormalEmojisSection(unnormalEmojisSection);
+
                     if (normalEmojisSection != null) {
-                        Map<String, String> normalEmojis = new HashMap<>();
-                        for (Map.Entry<String, Object> entry : normalEmojisSection.getValues(false).entrySet())
-                            normalEmojis.put(entry.getKey(), entry.getValue().toString());
+                        Map<String, Map<String, String>> normalEmojis = new HashMap<>();
+                        for (String category : normalEmojisSection.getKeys(false)) {
+                            ConfigurationSection categorySection = normalEmojisSection.getConfigurationSection(category);
+                            if (categorySection != null) {
+                                Map<String, String> emojiMap = new HashMap<>();
+                                for (String emoji : categorySection.getKeys(false)) {
+                                    String value = categorySection.getString(emoji);
+                                    emojiMap.put(emoji, value);
+                                }
+                                normalEmojis.put(category, emojiMap);
+                            }
+                        }
                         this.plugin.setNormalEmojis(normalEmojis);
                     } else {
-                        Map<String, String> normalEmojis = new HashMap<>();
+                        Map<String, Map<String, String>> normalEmojis = new HashMap<>();
                         this.plugin.setNormalEmojis(normalEmojis);
                     }
 
                     if (unnormalEmojisSection != null) {
-                        Map<String, String> unnormalEmojis = new HashMap<>();
-                        for (Map.Entry<String, Object> entry : unnormalEmojisSection.getValues(false).entrySet())
-                            unnormalEmojis.put(entry.getKey(), entry.getValue().toString());
+                        Map<String, Map<String, String>> unnormalEmojis = new HashMap<>();
+                        for (String category : unnormalEmojisSection.getKeys(false)) {
+                            ConfigurationSection categorySection = unnormalEmojisSection.getConfigurationSection(category);
+                            if (categorySection != null) {
+                                Map<String, String> emojiMap = new HashMap<>();
+                                for (String emoji : categorySection.getKeys(false)) {
+                                    String value = categorySection.getString(emoji);
+                                    emojiMap.put(emoji, value);
+                                }
+                                unnormalEmojis.put(category, emojiMap);
+                            }
+                        }
                         this.plugin.setUnnormalEmojis(unnormalEmojis);
                     } else {
-                        Map<String, String> unnormalEmojis = new HashMap<>();
+                        Map<String, Map<String, String>> unnormalEmojis = new HashMap<>();
                         this.plugin.setUnnormalEmojis(unnormalEmojis);
                     }
                     sender.sendMessage(ChatColor.GREEN + "ToastedEmojis config reloaded!");
@@ -63,19 +82,29 @@ public class ToastedEmojiReloadCommand implements CommandExecutor {
             } else if (args.length > 0 && args[0].equalsIgnoreCase("list")) {
                 if (sender.hasPermission("toastedemojis.list")) {
                     sender.sendMessage(ChatColor.GOLD + "Current Emojis:");
-                    Map<String, String> normalEmojis = this.plugin.getNormalEmojis();
-                    Map<String, String> unnormalEmojis = this.plugin.getUnnormalEmojis();
+                    Map<String, Map<String, String>> normalEmojis = this.plugin.getNormalEmojis();
+                    Map<String, Map<String, String>> unnormalEmojis = this.plugin.getUnnormalEmojis();
 
                     if (!normalEmojis.isEmpty()) {
-                        for (Map.Entry<String, String> entry : normalEmojis.entrySet()) {
-                            String symbol = ChatColor.translateAlternateColorCodes('&', entry.getValue());
-                            sender.sendMessage(ChatColor.GOLD + " - " + ChatColor.WHITE + entry.getKey() + ChatColor.GOLD + " -> " + ChatColor.WHITE + symbol);
+                        for (Map.Entry<String, Map<String, String>> categoryEntry : normalEmojis.entrySet()) {
+                            String category = categoryEntry.getKey();
+                            Map<String, String> emojiMap = categoryEntry.getValue();
+                            for (Map.Entry<String, String> emojiEntry : emojiMap.entrySet()) {
+                                String emoji = emojiEntry.getKey();
+                                String symbol = ChatColor.translateAlternateColorCodes('&', emojiEntry.getValue());
+                                sender.sendMessage(ChatColor.GOLD + " - " + ChatColor.WHITE + category + ChatColor.GOLD + " -> " + ChatColor.WHITE + emoji + ChatColor.GOLD + " -> " + ChatColor.WHITE + symbol);
+                            }
                         }
                     }
                     if (!unnormalEmojis.isEmpty()) {
-                        for (Map.Entry<String, String> entry : unnormalEmojis.entrySet()) {
-                            String symbol = ChatColor.translateAlternateColorCodes('&', entry.getValue());
-                            sender.sendMessage(ChatColor.GOLD + " - " + ChatColor.WHITE + ":" + entry.getKey() + ":" + ChatColor.GOLD + " -> " + ChatColor.WHITE + symbol);
+                        for (Map.Entry<String, Map<String, String>> categoryEntry : unnormalEmojis.entrySet()) {
+                            String category = categoryEntry.getKey();
+                            Map<String, String> emojiMap = categoryEntry.getValue();
+                            for (Map.Entry<String, String> emojiEntry : emojiMap.entrySet()) {
+                                String emoji = emojiEntry.getKey();
+                                String symbol = ChatColor.translateAlternateColorCodes('&', emojiEntry.getValue());
+                                sender.sendMessage(ChatColor.GOLD + " - " + ChatColor.WHITE+ category + ChatColor.GOLD + " -> " + ChatColor.WHITE + ":" + emoji + ":" + ChatColor.GOLD + " -> " + ChatColor.WHITE + symbol);
+                            }
                         }
                     }
                 } else {
