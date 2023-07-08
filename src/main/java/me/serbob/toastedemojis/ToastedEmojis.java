@@ -16,6 +16,7 @@ import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -42,47 +43,76 @@ public final class ToastedEmojis extends JavaPlugin implements Listener {
         normalEmojisSection = config.getConfigurationSection("normal-emojis");
         unnormalEmojisSection = config.getConfigurationSection("unnormal-emojis");
 
-        // Initialize the emojis maps
-           //normalEmojis = normalEmojisSection.getValues(false).entrySet().stream()
-             //       .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().toString()));
-        ConfigurationSection emojisSection = config.getConfigurationSection("normal-emojis");
-        for (String category : emojisSection.getKeys(false)) {
-            String permissionName = "toastedemojis.emoji."+category;
-            if (getServer().getPluginManager().getPermission(permissionName) == null) {
-                getServer().getPluginManager().addPermission(new Permission(permissionName));
-            }
-            ConfigurationSection categorySection = emojisSection.getConfigurationSection(category);
-            if (categorySection != null) {
-                Map<String, String> emojiMap = new HashMap<>();
-                for (String emoji : categorySection.getKeys(false)) {
-                    String value = categorySection.getString(emoji);
-                    emojiMap.put(emoji, value);
+        if (normalEmojisSection != null) {
+            for (String category : normalEmojisSection.getKeys(false)) {
+                String permissionName = "toastedemojis.emoji." + category;
+                if (getServer().getPluginManager().getPermission(permissionName) == null) {
+                    getServer().getPluginManager().addPermission(new Permission(permissionName));
                 }
-                normalEmojis.put(category, emojiMap);
+                ConfigurationSection categorySection = normalEmojisSection.getConfigurationSection(category);
+                if (categorySection != null) {
+                    Map<String, String> emojiMap = new HashMap<>();
+                    for (String emoji : categorySection.getKeys(false)) {
+                        String value = categorySection.getString(emoji);
+                        emojiMap.put(emoji, value);
+                    }
+                    normalEmojis.put(category, emojiMap);
+                }
+            }
+        } else {
+            getLogger().warning("The 'normal-emojis' section is missing or empty in the config.yml file.");
+            config.set("replace_color",false);
+            config.createSection("normal-emojis");
+            config.set("normal-emojis.default.o/", "&dhi&r");
+            // Save the updated config to disk
+            try {
+                config.save(configFile);
+            } catch (IOException e) {
+                getLogger().warning("Failed to save the updated config.yml file.");
+                e.printStackTrace();
             }
         }
-        emojisSection = config.getConfigurationSection("unnormal-emojis");
-        for (String category : emojisSection.getKeys(false)) {
-            String permissionName = "toastedemojis.emoji."+category;
-            if (getServer().getPluginManager().getPermission(permissionName) == null) {
-                getServer().getPluginManager().addPermission(new Permission(permissionName));
-            }
-            ConfigurationSection categorySection = emojisSection.getConfigurationSection(category);
-            if (categorySection != null) {
-                Map<String, String> emojiMap = new HashMap<>();
-                for (String emoji : categorySection.getKeys(false)) {
-                    String value = categorySection.getString(emoji);
-                    emojiMap.put(emoji, value);
+
+        if (unnormalEmojisSection != null) {
+            for (String category : unnormalEmojisSection.getKeys(false)) {
+                String permissionName = "toastedemojis.emoji." + category;
+                if (getServer().getPluginManager().getPermission(permissionName) == null) {
+                    getServer().getPluginManager().addPermission(new Permission(permissionName));
                 }
-                unnormalEmojis.put(category, emojiMap);
+                ConfigurationSection categorySection = unnormalEmojisSection.getConfigurationSection(category);
+                if (categorySection != null) {
+                    Map<String, String> emojiMap = new HashMap<>();
+                    for (String emoji : categorySection.getKeys(false)) {
+                        String value = categorySection.getString(emoji);
+                        emojiMap.put(emoji, value);
+                    }
+                    unnormalEmojis.put(category, emojiMap);
+                }
+            }
+        } else {
+            getLogger().warning("The 'unnormal-emojis' section is missing or empty in the config.yml file. Default values will be used.");
+            config.set("replace_color",false);
+            config.createSection("unnormal-emojis");
+            config.set("unnormal-emojis.default.lenny", "&3( ͡° ͜ʖ&5 ͡°)");
+            config.set("unnormal-emojis.default.shrug", "¯\\_(ツ)_/¯");
+            config.createSection("unnormal-emojis.mvp");
+            config.set("unnormal-emojis.mvp.tableflip", "(╯°□°）╯︵ ┻━┻");
+            // Save the updated config to disk
+            try {
+                config.save(configFile);
+            } catch (IOException e) {
+                getLogger().warning("Failed to save the updated config.yml file.");
+                e.printStackTrace();
             }
         }
+
         // Register the event listener
         getServer().getPluginManager().registerEvents(this, this);
 
         getCommand("toastedemojis").setExecutor(new ToastedEmojiReloadCommand(this));
         getCommand("toastedemojis").setTabCompleter(new ToastedEmojiReloadTabCompleter());
     }
+
 
     // Handle the AsyncPlayerChatEvent event
     @EventHandler(priority = EventPriority.LOW)
